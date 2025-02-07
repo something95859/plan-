@@ -64,7 +64,8 @@
     <h2>Mark Attendance</h2>
     <form action="{{ url_for('mark_attendance') }}" method="post" enctype="multipart/form-data">
         <label for="course">Select Course:</label>
-        <select name="course_code" id="course" onchange="toggleImageUpload()">
+         <select name="course_code" id="course" onchange="toggleImageUpload()">
+            <option value="" disabled selected>Select a course</option> <!-- No preselected value -->
             {% for course in courses %}
                 <option value="{{ course.code }}" data-image-required="{{ course.attendance_image }}">
                     {{ course.name }} ({{ course.code }})
