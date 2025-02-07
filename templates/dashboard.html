@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Your Dashboard</h1>
+        <h1>Welcome to Attendance Expoilt Dashboard</h1>
         <p>Manage your courses and attendance here.</p>
     </header>
 
@@ -32,8 +32,6 @@
     {% endwith %}
 
     <div class="dashboard-buttons">
-        <a href="{{ url_for('courses') }}" class="btn">View Courses</a>
-        <a href="{{ url_for('mark_attendance') }}" class="btn">Mark Attendance</a>
         <a href="{{ url_for('logout') }}" class="btn">Logout</a>
     </div>
 
@@ -53,9 +51,9 @@
             <td>{{ course.description or 'No description available' }}</td>
             <td>
                 {% if course.attendance_image %}
-                    <img src="{{ course.attendance_image }}" onload="this.src=escapeBase64(this.src)" alt="Attendance Image" width="100">
+                    Image Required
                 {% else %}
-                    No Image
+                    No Image Required 
                 {% endif %}
             </td>
             <td>{{ course.detect_attendancewindow }}</td>
@@ -79,22 +77,33 @@
             <input type="file" name="attendance_image" id="attendance_image" accept="image/*">
         </div>
         
-        <label for="mac_address">MAC Address:</label>
+        <label class="tooltip">MAC Address:
+            <span class="tooltip-text">Use: 123456789012345</span>
+        </label>
         <input type="text" name="mac_address" required>
         
-        <label for="imei">IMEI:</label>
+        <label class="tooltip">IMEI:
+            <span class="tooltip-text">Use: iOS166048e1c22d (You can change the number for randomness)</span>
+        </label>
         <input type="text" name="imei" required>
         
-        <label for="wifi_ssid">WiFi SSID:</label>
+        <label class="tooltip">WiFi SSID:
+            <span class="tooltip-text">The Name of the WiFi network you're connected to Example: IITB-Wireless</span>
+        </label>
         <input type="text" name="wifi_ssid" required>
         
-        <label for="wifi_bssid">WiFi BSSID:</label>
+        <label class="tooltip">WiFi BSSID:
+            <span class="tooltip-text">The MAC Address of the WiFi network of our Class Venue (Google it to know the steps)</span>
+        </label>
         <input type="text" name="wifi_bssid" required>
         
-        <label for="ip_address">IP Address:</label>
+        <label class="tooltip">IP Address:
+            <span class="tooltip-text">Your IP Address of our Class Venue Example: 10.X.X.X</span>
+        </label>
         <input type="text" name="ip_address" required>
         
-        <button type="submit">Submit Attendance</button>
+        
+        <button type="submit" class="btn">Submit Attendance</button>
     </form>
 
     <h2>View Attendance</h2>
@@ -134,7 +143,7 @@
     {% endif %}
 
     <footer>
-        <p>© 2025 Your Application Name</p>
+        <p>I wander through the echoes of my own existence, searching for a purpose that only time or courage may reveal.</p>
     </footer>
 </body>
 </html>
