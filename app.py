@@ -275,7 +275,7 @@ def send_attendance(auth_token, course_code, image_path, mac_address, imei, wifi
     
     image_binary = image_path.read()  # Read file as binary
     encoded_image = base64.b64encode(image_binary).decode("utf-8")  # Encode to base64 string
-    #encoded_image = re.sub(r'/', r'\/', encoded_image)
+    encoded_image = re.sub(r'/', r'\/', encoded_image)
 
     if attendance_image == False:
     
