@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Available Courses</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table border="1">
+        <tr>
+            <th>Course Name</th>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Attendance Image</th>
+            <th>Detect Attendance Window</th>
+        </tr>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.name }}</td>
+            <td>{{ course.code }}</td>
+            <td>{{ course.description or 'No description available' }}</td>
+            <td>
+                {% if course.attendance_image %}
+                    <img src="{{ course.attendance_image }}" alt="Attendance Image" width="100">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>{{ course.detect_attendancewindow }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
